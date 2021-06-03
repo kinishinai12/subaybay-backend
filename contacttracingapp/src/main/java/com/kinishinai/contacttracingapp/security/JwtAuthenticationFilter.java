@@ -1,5 +1,7 @@
 package com.kinishinai.contacttracingapp.security;
 
+import com.kinishinai.contacttracingapp.service.EstablishmentDetailsServiceImpl;
+import com.kinishinai.contacttracingapp.service.UserDetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Configuration;
@@ -17,6 +19,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.regex.Pattern;
+
 // TODO debug this and make another filter
 @Component("JwtAuthenticationFilter")
 @Configuration
@@ -25,7 +29,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private JwtProvider jwtProvider;
     @Autowired(required=false)
     @Qualifier("UserDetailsServiceImpl")
-    private UserDetailsService userDetailsService;
+    private UserDetailsServiceImpl userDetailsService;
+
+    @Autowired
+    @Qualifier("EstablishmentDetailsServiceImpl")
+    private EstablishmentDetailsServiceImpl establishmentDetailsService;
 
     @Override
     protected void doFilterInternal(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, FilterChain filterChain) throws ServletException, IOException {
@@ -33,11 +41,21 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         if(StringUtils.hasText(jwt) && jwtProvider.validateToken(jwt)){
 
+            UsernamePasswordAuthenticationToken authentication = null;
+
             String username = jwtProvider.getUsernameFromJwt(jwt);
 
-            UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-            UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-            authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(httpServletRequest));
+
+            if(!isNumber(username)){
+                UserDetails establishmentDetails = establishmentDetailsService.loadUserByUsername(username);
+                authentication = new UsernamePasswordAuthenticationToken(establishmentDetails, null, establishmentDetails.getAuthorities());
+                authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(httpServletRequest));
+            }else{
+                UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+                authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+                authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(httpServletRequest));
+            }
+
 
             SecurityContextHolder.getContext().setAuthentication(authentication);
         }
@@ -50,5 +68,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         if(StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer "))
             return bearerToken.substring(7);
         return bearerToken;
+    }
+
+    private boolean isNumber(String username){
+        Pattern pattern = Pattern.compile("-?\\d+(\\.\\d+)?");
+        return username == null? false:pattern.matcher(username).matches();
     }
 }

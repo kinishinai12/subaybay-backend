@@ -30,7 +30,9 @@ public class EstablishmentDetailsServiceImpl implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         System.out.println("hello andito ako");
         Establishment establishment = ESTABLISHMENTREPOSITORY.findByEmail(username).get();
-
+         if(establishment == null){
+             return null;
+         }
 
         return new org.springframework.security
                 .core.userdetails.User(establishment.getEmail(), establishment.getPassword(),

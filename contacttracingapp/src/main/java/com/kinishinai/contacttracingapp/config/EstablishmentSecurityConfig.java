@@ -1,7 +1,6 @@
 package com.kinishinai.contacttracingapp.config;
 
 import com.kinishinai.contacttracingapp.security.JwtAuthenticationFilter;
-import com.kinishinai.contacttracingapp.security.JwtAuthenticationFilterForEstablishment;
 import com.kinishinai.contacttracingapp.service.EstablishmentDetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -31,9 +30,12 @@ public class EstablishmentSecurityConfig  extends WebSecurityConfigurerAdapter {
     @Autowired
     @Resource(name = "EstablishmentDetailsServiceImpl")
     private EstablishmentDetailsServiceImpl ESTABLISHMENTSERVICE;
-    @Autowired(required=false)
-    @Qualifier("JwtAuthenticationFilterForEstablishment")
-    private JwtAuthenticationFilterForEstablishment JWTAUTHENTICATIONFILTER;
+    @Autowired(required = false)
+    @Qualifier("JwtAuthenticationFilter")
+    private JwtAuthenticationFilter JWTAUTHENTICATIONFILTER;
+//    Autowired
+//    @Qualifier("authenticationManager1")
+//    private Security authManager1;
 
     @Bean(name = "EstablishmentAuthenticationManager")
     @Override

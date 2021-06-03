@@ -33,6 +33,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired(required = false)
     @Qualifier("JwtAuthenticationFilter")
     private JwtAuthenticationFilter JWTAUTHENTICATIONFILTER;
+//    @Autowired
+//    @Qualifier("authenticationManager1")
+//    private Security authManager1;
 
 //    @Bean(BeanIds.AUTHENTICATION_MANAGER)
     @Bean(name = "USERAUTHENTICATIONMANAGER")
@@ -47,9 +50,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers("/subaybay/auth/**")
                 .permitAll()
-                .antMatchers("/subaybay/user")
+                .antMatchers("/subaybay/user/**")
                 .hasAnyAuthority("USER","ADMIN")
-                .antMatchers("/subaybay/admin")
+                .antMatchers("/subaybay/admin/**")
                 .hasAuthority("ADMIN")
                 .anyRequest()
                 .authenticated();
