@@ -56,4 +56,10 @@ public class SubaybayController {
         return new ResponseEntity<>("changed password successfully", HttpStatus.OK);
     }
 
+    @PostMapping("/logout")
+    public ResponseEntity<String> logout(@Valid @RequestBody RefreshTokenRequest refreshTokenRequest) {
+        SUBAYBAYSERVICE.logout(refreshTokenRequest);
+        return ResponseEntity.status(HttpStatus.OK).body("Refresh Token Deleted Successfully!!");
+    }
+
 }

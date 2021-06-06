@@ -238,4 +238,8 @@ public class SubaybayService {
         System.out.println("dumaan dito bago mag error");
         return new AuthenticationResponseForEstablishment(token, loginRequest.getEmail());
     }
+
+    public void logout(RefreshTokenRequest refreshTokenRequest) {
+        REFRESHTOKENSERVICE.deleteRefreshToken(refreshTokenRequest.getRefreshToken());
+    }
 }
