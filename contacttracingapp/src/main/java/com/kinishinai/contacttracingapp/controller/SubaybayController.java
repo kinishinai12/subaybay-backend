@@ -7,6 +7,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+
 @RestController
 @RequestMapping("/subaybay/auth")
 @AllArgsConstructor
@@ -35,6 +37,11 @@ public class SubaybayController {
     @PostMapping("/login")
     public AuthenticationResponse login(@RequestBody LoginRequest loginRequest){
         return SUBAYBAYSERVICE.login(loginRequest);
+    }
+
+    @PostMapping("/refresh/token")
+    public AuthenticationResponse refreshTokens(@Valid @RequestBody RefreshTokenRequest refreshTokenRequest) {
+        return SUBAYBAYSERVICE.refreshToken(refreshTokenRequest);
     }
 
     @GetMapping("/verifyforgotpassword/{mobileNumber}")

@@ -44,6 +44,8 @@ public class SubaybayService {
     private AddressRepository ADDRESSREPOSITORY;
     @Autowired
     private ImageRepository IMAGEREPOSITORY;
+    @Autowired
+    private RefreshTokenService REFRESHTOKENSERVICE;
 
     // establishment constant
     @Autowired
@@ -132,7 +134,10 @@ public class SubaybayService {
         SecurityContextHolder.getContext().setAuthentication(authenticate);
 
         String token = JWTPROVIDER.generateToken(authenticate);
-        return new AuthenticationResponse(token, loginRequest.getMobileNumber());
+        return new AuthenticationResponse(token,
+                loginRequest.getMobileNumber(),
+                REFRESHTOKENSERVICE.generateRefreshToken().getToken(),
+                Instant.now().plusMillis(JWTPROVIDER.getJwtExpirationInMillis()));
     }
 
     public void verifyForgotPassword(long mobileNumber) {
@@ -144,12 +149,18 @@ public class SubaybayService {
             String otp = generateVerificationNumber(user);
             SmsRequest smsRequest = new SmsRequest("+63"+ user.getMobileNumber(),"your subaybay app verification code is "+otp);
             TWILIOSERVICE.sendSms(smsRequest);
-        }else{
+        }else {
             throw new SubaybayException("user not found");
         }
+    }
 
-
-
+    public AuthenticationResponse refreshToken(RefreshTokenRequest refreshTokenRequest) {
+        REFRESHTOKENSERVICE.validateRefreshToken(refreshTokenRequest.getRefreshToken());
+        String token = JWTPROVIDER.generateTokenWithUserName(refreshTokenRequest.getUsername());
+        return new AuthenticationResponse(token,
+                refreshTokenRequest.getUsername(),
+                REFRESHTOKENSERVICE.generateRefreshToken().getToken(),
+                Instant.now().plusMillis(JWTPROVIDER.getJwtExpirationInMillis()));
     }
 
     @Transactional
