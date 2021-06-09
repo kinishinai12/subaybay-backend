@@ -1,14 +1,19 @@
 package com.kinishinai.contacttracingapp.service;
 
 import com.kinishinai.contacttracingapp.dto.EstablishmentRequest;
+import com.kinishinai.contacttracingapp.dto.RegisterRequest;
 import com.kinishinai.contacttracingapp.exception.SubaybayException;
 import com.kinishinai.contacttracingapp.model.Establishment;
 import com.kinishinai.contacttracingapp.model.NotificationEmail;
+import com.kinishinai.contacttracingapp.model.OTP;
+import com.kinishinai.contacttracingapp.model.User;
 import com.kinishinai.contacttracingapp.repository.EstablishmentRepository;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Optional;
 
 @Service
 @Slf4j
@@ -70,7 +75,5 @@ public class SubaybayEstablishmentService {
         Establishment establishment = ESTABLISHMENTREPOSITORY.findById(id).get();
         ESTABLISHMENTREPOSITORY.delete(establishment);
     }
-
-    // TODO forgot password
 
 }

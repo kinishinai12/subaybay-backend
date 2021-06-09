@@ -34,9 +34,9 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException{
 
         User user = USERREPOSITORY.findByMobileNumber(Long.parseLong(username)).get();
-        if(user == null){
-            return null;
-        }
+//        if(user == null){
+//            return null;
+//        }
 
 
         return new org.springframework.security

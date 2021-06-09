@@ -15,6 +15,7 @@ import java.util.Optional;
 @RestController
 @AllArgsConstructor
 @Slf4j
+//@CrossOrigin(origins="https://localhost:3000")
 public class SubaybayScannedController {
     private final ScannedUserService SCANNEDUSERSERVICE;
     //TODO testing

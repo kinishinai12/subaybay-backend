@@ -12,6 +12,7 @@ import javax.validation.Valid;
 @RestController
 @RequestMapping("/subaybay/auth")
 @AllArgsConstructor
+//@CrossOrigin(origins="http://localhost:3000")
 public class SubaybayController {
 
     private final SubaybayService SUBAYBAYSERVICE;
@@ -33,12 +34,12 @@ public class SubaybayController {
         SUBAYBAYSERVICE.verifyAccount(otp);
         return new ResponseEntity<String> ("verified",HttpStatus.OK);
     }
-
+    // applicable in establishment also
     @PostMapping("/login")
     public AuthenticationResponse login(@RequestBody LoginRequest loginRequest){
         return SUBAYBAYSERVICE.login(loginRequest);
     }
-
+    // applicable also in establishment
     @PostMapping("/refresh/token")
     public AuthenticationResponse refreshTokens(@Valid @RequestBody RefreshTokenRequest refreshTokenRequest) {
         return SUBAYBAYSERVICE.refreshToken(refreshTokenRequest);
@@ -55,7 +56,7 @@ public class SubaybayController {
         SUBAYBAYSERVICE.forgotPassword(otp,forgotPassRequest);
         return new ResponseEntity<>("changed password successfully", HttpStatus.OK);
     }
-
+// applicable to establishment also
     @PostMapping("/logout")
     public ResponseEntity<String> logout(@Valid @RequestBody RefreshTokenRequest refreshTokenRequest) {
         SUBAYBAYSERVICE.logout(refreshTokenRequest);

@@ -154,6 +154,8 @@ public class SubaybayService {
         }
     }
 
+
+    // applicable for admin, establishment, and user
     public AuthenticationResponse refreshToken(RefreshTokenRequest refreshTokenRequest) {
         REFRESHTOKENSERVICE.validateRefreshToken(refreshTokenRequest.getRefreshToken());
         String token = JWTPROVIDER.generateTokenWithUserName(refreshTokenRequest.getUsername());
@@ -177,7 +179,6 @@ public class SubaybayService {
 
     // TODO establishment business logic
 
-    // TODO Testing controller
     @Transactional
     public void signup(EstablishmentRequest establishmentRequest){
         Establishment establishment = new Establishment();
@@ -228,17 +229,53 @@ public class SubaybayService {
         establishment.setVerified(true);
         ESTABLISHMENTREPOSITORY.save(establishment);
     }
-    // TODO TESTING
+
     public AuthenticationResponseForEstablishment loginEstablishment(LoginRequestForEstablishment loginRequest) {
-        System.out.println("dumaan dito");
         Authentication authenticate = AUTHENTICATIONMANAGER1.authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getEmail(),loginRequest.getPassword()));
         SecurityContextHolder.getContext().setAuthentication(authenticate);
-        System.out.println("sa jwt ang nex");
         String token = JWTPROVIDER.generateToken(authenticate);
-        System.out.println("dumaan dito bago mag error");
-        return new AuthenticationResponseForEstablishment(token, loginRequest.getEmail());
+        return new AuthenticationResponseForEstablishment(token,loginRequest.getEmail(),
+                REFRESHTOKENSERVICE.generateRefreshToken().getToken(),
+                Instant.now().plusMillis(JWTPROVIDER.getJwtExpirationInMillis()));
     }
 
+// TODO testing
+    // It is also applicable when the establishment is online or authenticated
+    public void verifyForgotPasswordForEstablishment(String email){
+        boolean establishmentExist = ESTABLISHMENTREPOSITORY.existsByEmail(email);
+        if(establishmentExist){
+            Establishment establishment = ESTABLISHMENTREPOSITORY.findByEmail(email).orElseThrow( ()-> new SubaybayException("not found"));
+            String otp = generateVerificationCode(establishment);
+            MAILSERVICE.sendMail(new NotificationEmail("Hello, Sir/Ma'am",
+                    email,
+                    "Please use this verification code to change your password: " + otp));
+        }
+        else{
+            throw new SubaybayException("Establishment not found.");
+        }
+    }
+
+    public String generateVerificationCode(Establishment establishment){
+        String verificationCode = generateOTP();
+        VerificationToken verificationToken = new VerificationToken();
+        verificationToken.setToken(verificationCode);
+        verificationToken.setEstablishment(establishment);
+        TOKENREPOSITORY.save(verificationToken);
+
+        return verificationCode;
+    }
+// TODO testing
+    @Transactional
+    public void forgotPasswordForEstablishment(String otp, ForgotPassRequest password){
+        Optional<VerificationToken> verificationCode = TOKENREPOSITORY.findByToken(otp);
+        verificationCode.orElseThrow(()-> new SubaybayException("Invalid otp"));
+        long establishmentId = verificationCode.get().getEstablishment().getId();
+        Establishment establishment = ESTABLISHMENTREPOSITORY.findById(establishmentId).orElseThrow( ()-> new SubaybayException("not found"));
+        establishment.setPassword(PASSWORDENCODER.encode(password.getPassword()));
+        TOKENREPOSITORY.deleteById(verificationCode.get().getId());
+        ESTABLISHMENTREPOSITORY.save(establishment);
+    }
+    // it also applicable for admin, establishment, and user
     public void logout(RefreshTokenRequest refreshTokenRequest) {
         REFRESHTOKENSERVICE.deleteRefreshToken(refreshTokenRequest.getRefreshToken());
     }

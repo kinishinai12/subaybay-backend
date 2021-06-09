@@ -56,9 +56,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(httpServletRequest));
             }
 
-
             SecurityContextHolder.getContext().setAuthentication(authentication);
         }
+//        httpServletResponse.addHeader("Access-Control-Allow-Headers",
+//                "Access-Control-Allow-Origin, Origin, Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers");
+//        if (httpServletResponse.getHeader("Access-Control-Allow-Origin") == null)
+//            httpServletResponse.addHeader("Access-Control-Allow-Origin", "*");
+
         filterChain.doFilter(httpServletRequest,httpServletResponse);
     }
 

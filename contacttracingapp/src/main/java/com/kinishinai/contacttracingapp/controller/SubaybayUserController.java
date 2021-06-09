@@ -21,6 +21,7 @@ import java.util.List;
 @RestController
 @AllArgsConstructor
 @Slf4j
+//@CrossOrigin(origins="https://localhost:3000")
 public class SubaybayUserController {
 
     private final SubaybayUserService SUBAYBAYUSERSERVICE;

@@ -23,6 +23,7 @@ import javax.annotation.Resource;
 
 
 @Configuration
+@EnableWebSecurity
 @Order(2)
 public class EstablishmentSecurityConfig  extends WebSecurityConfigurerAdapter {
     @Autowired

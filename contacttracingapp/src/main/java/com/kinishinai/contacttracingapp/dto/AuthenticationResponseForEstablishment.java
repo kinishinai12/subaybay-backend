@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.Instant;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -12,4 +14,6 @@ import lombok.NoArgsConstructor;
 public class AuthenticationResponseForEstablishment {
     private String authenticationToken;
     private String email;
+    private String refreshToken;
+    private Instant expiresAt;
 }

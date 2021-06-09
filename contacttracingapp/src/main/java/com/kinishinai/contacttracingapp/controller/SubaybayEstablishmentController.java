@@ -1,6 +1,7 @@
 package com.kinishinai.contacttracingapp.controller;
 
 import com.kinishinai.contacttracingapp.dto.EstablishmentRequest;
+import com.kinishinai.contacttracingapp.dto.ForgotPassRequest;
 import com.kinishinai.contacttracingapp.model.Establishment;
 import com.kinishinai.contacttracingapp.repository.EstablishmentRepository;
 import com.kinishinai.contacttracingapp.service.SubaybayEstablishmentService;
@@ -31,8 +32,5 @@ public class SubaybayEstablishmentController {
         ESTABLISHMENTSERVICE.delete(establishmentid);
         return new ResponseEntity<>("establishment deleted", HttpStatus.OK);
     }
-
-    // TODO forgot password
-
 
 }
