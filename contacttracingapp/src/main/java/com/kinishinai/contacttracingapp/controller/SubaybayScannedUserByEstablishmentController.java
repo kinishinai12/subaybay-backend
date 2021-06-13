@@ -2,6 +2,7 @@ package com.kinishinai.contacttracingapp.controller;
 
 import com.kinishinai.contacttracingapp.dto.ScannedUserByEstablishmentRequest;
 import com.kinishinai.contacttracingapp.model.Establishment;
+import com.kinishinai.contacttracingapp.model.ScannedUserByEstablishment;
 import com.kinishinai.contacttracingapp.service.ScannedUserByEstablishmentService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -34,6 +35,11 @@ public class SubaybayScannedUserByEstablishmentController {
     @GetMapping("/getallestablishment/{pageNumber}/{pageSize}")
     public Page<Establishment> getAllEstablishment(@PathVariable int pageNumber, @PathVariable int pageSize){
         return SUBES.getAllEstablishment(pageNumber, pageSize);
+    }
+
+    @GetMapping("/getAllScannedByEstablisment/{pageNumber}/{pageSize}")
+    public Page<ScannedUserByEstablishment> getAllScanned(@PathVariable int pageNumber, @PathVariable int pageSize){
+        return SUBES.allScannedByEstablishment(pageNumber,pageSize);
     }
 
 

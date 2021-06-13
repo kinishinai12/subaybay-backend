@@ -73,6 +73,13 @@ public class ScannedUserByEstablishmentService {
         return null;
     }
 
+    public Page<ScannedUserByEstablishment> allScannedByEstablishment(int pageNumber, int pageSize) {
+        Pageable requestedPage = PageRequest.of(pageNumber, pageSize, Sort.by("dateScanned").ascending());
+        Page<ScannedUserByEstablishment> ScannedUsersByEstablishment = SUBER.findAll(requestedPage);
+        return ScannedUsersByEstablishment;
+    }
+
+
     // TODO sort endpoint
     // TODO search endpoint
 }
